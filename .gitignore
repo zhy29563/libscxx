@@ -30,3 +30,17 @@
 *.exe
 *.out
 *.app
+
+# clion
+/.idea/
+/cmake-build-*/
+
+# vscode
+/.vscode/
+/build*/
+
+# QtCreator
+/CMakeLists.txt.user
+
+# environment
+/envs/
