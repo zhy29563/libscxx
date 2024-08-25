@@ -53,6 +53,14 @@ message(STATUS "LIBS_ROOT=${LIBS_ROOT}")
 # ######################################################################################################################
 # 依赖库
 # ######################################################################################################################
+list(APPEND CMAKE_PREFIX_PATH ${LIBS_ROOT}/libzmq-v4.3.5)
+find_package(ZeroMQ REQUIRED)
+print_all_variables_with_regex(^ZeroMQ)
+
+if(${ZeroMQ_FOUND})
+  include_directories(${ZeroMQ_INCLUDE_DIR})
+  link_libraries(${ZeroMQ_LIBRARY} pthread)
+endif()
 
 # ######################################################################################################################
 # 项目
