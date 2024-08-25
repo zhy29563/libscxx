@@ -53,6 +53,17 @@ message(STATUS "LIBS_ROOT=${LIBS_ROOT}")
 # ######################################################################################################################
 # 依赖库
 # ######################################################################################################################
+find_package(PythonLibs REQUIRED)
+print_all_variables_with_regex(^PythonLibs)
+
+list(APPEND CMAKE_PREFIX_PATH ${LIBS_ROOT}/libpybind11-v2.13.5)
+find_package(pybind11 REQUIRED)
+print_all_variables_with_regex(^pybind11)
+
+if(${pybind11_FOUND})
+  include_directories(${pybind11_INCLUDE_DIRS})
+  link_libraries(pybind11::pybind11)
+endif()
 
 # ######################################################################################################################
 # 项目
@@ -64,7 +75,13 @@ foreach(SUB_FILE ${SUB_FILES})
 
   if(SUB_FILE_NAME MATCHES "^single_.*\.cpp$")
     get_filename_component(FILE_NAME ${SUB_FILE} NAME_WE)
-    add_executable(${FILE_NAME} ${SUB_FILE})
+    add_library(${FILE_NAME} SHARED ${SUB_FILE})
+
+    set_target_properties(${FILE_NAME}
+      PROPERTIES
+      PREFIX ""
+      SUFFIX ".pyd"
+    )
     target_include_directories(${FILE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
   endif()
 endforeach()

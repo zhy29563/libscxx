@@ -189,3 +189,4 @@ function build_auto_tools() {
 ########################################################################################################################
 # 编译
 ########################################################################################################################
+build_cmake https://github.com/pybind/pybind11/archive/refs/tags/v2.13.5.tar.gz libpybind11-v2.13.5 -DDOWNLOAD_EIGEN=ON -DDOWNLOAD_CATCH=ON -DPYBIND11_TEST=OFF
