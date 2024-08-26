@@ -52,9 +52,14 @@ message(STATUS "LIBS_ROOT=${LIBS_ROOT}")
 
 # ######################################################################################################################
 # 依赖库
+# set(ENV{PKG_CONFIG_PATH} ${LIBS_ROOT}/libxxx-vxx/lib/pkgconfig)
+# find_lib_by_pkgconfig(xxx)
+#
+# list(APPEND CMAKE_PREFIX_PATH ${LIBS_ROOT}/libxxx-vxx)
+# find_lib_by_cmake(xxx)
 # ######################################################################################################################
-set(glog_DIR   ${LIBS_ROOT}/libglog-v0.7.1/lib/cmake/glog)
-find_package(glog 0.7.1 REQUIRED)
+list(APPEND CMAKE_PREFIX_PATH ${LIBS_ROOT}/libglog-v0.7.1)
+find_lib_by_cmake(glog)
 link_libraries(glog::glog)
 
 # ######################################################################################################################
