@@ -58,6 +58,11 @@ message(STATUS "LIBS_ROOT=${LIBS_ROOT}")
 # list(APPEND CMAKE_PREFIX_PATH ${LIBS_ROOT}/libxxx-vxx)
 # find_lib_by_cmake(xxx)
 # ######################################################################################################################
+list(APPEND CMAKE_PREFIX_PATH ${LIBS_ROOT}/libeigen-v3.4.0)
+find_lib_by_cmake(Eigen3)
+
+set(ENV{PKG_CONFIG_PATH} ${LIBS_ROOT}/libeigen-v3.4.0/share/pkgconfig)
+find_lib_by_pkgconfig(eigen3)
 
 # ######################################################################################################################
 # 项目
