@@ -111,20 +111,12 @@ function build_cmake() {
   local FULL_INS_PATH=${LIB_DIR}/${TCL_NAME}/${INS_DIR}
 
   rm -rf "${FULL_BLT_PATH}"
-  if [ -z "${BLD_PMS}" ]; then
-    cmake -S "${FULL_SRC_PATH}" -B "${FULL_BLT_PATH}" -DCMAKE_INSTALL_PREFIX="${FULL_INS_PATH}"
-  else
-    cmake -S "${FULL_SRC_PATH}" -B "${FULL_BLT_PATH}" -DCMAKE_INSTALL_PREFIX="${FULL_INS_PATH}" ${BLD_PMS}
-  fi
-
-  if [ $? -eq 0 ]; then
+  if cmake -S "${FULL_SRC_PATH}" -B "${FULL_BLT_PATH}" -DCMAKE_INSTALL_PREFIX="${FULL_INS_PATH}" ${BLD_PMS}; then
     if ! cmake --build "${FULL_BLT_PATH}" --target install -j; then
       echo "build ${PKG_URL} is failed."
-      exit
     fi
   else
     echo "configure ${PKG_URL} is failed."
-    exit
   fi
 }
 
@@ -169,20 +161,12 @@ function build_auto_tools() {
     exit
   }
 
-  if [ -z "${BLD_PMS}" ]; then
-    "${OLDPWD}/configure" --prefix="${FULL_INS_PATH}"
-  else
-    "${OLDPWD}/configure" --prefix="${FULL_INS_PATH}" ${BLD_PMS}
-  fi
-
-  if [ $? -eq 0 ]; then
+  if "${OLDPWD}/configure" --prefix="${FULL_INS_PATH}" ${BLD_PMS}; then
     if ! make install; then
       echo "build ${PKG_URL} is failed."
-      exit
     fi
   else
     echo "configure ${PKG_URL} is failed."
-    exit
   fi
 }
 
