@@ -60,17 +60,11 @@ message(STATUS "LIBS_ROOT=${LIBS_ROOT}")
 # ######################################################################################################################
 # With CMake
 set(jsoncpp_DIR ${LIBS_ROOT}/libjsoncpp-v1.9.5/lib/cmake/jsoncpp)
-find_package(jsoncpp REQUIRED)
-print_all_variables_with_regex(jsoncpp)
+find_lib_by_cmake(jsoncpp)
 
 # With Pkgconfig
 set(ENV{PKG_CONFIG_PATH} ${LIBS_ROOT}/libjsoncpp-v1.9.5/lib/pkgconfig)
-pkg_search_module(LIB_JSON_CPP REQUIRED jsoncpp)
-print_all_variables_with_regex(LIB_JSON_CPP)
-
-include_directories(${LIB_JSON_CPP_INCLUDE_DIRS})
-link_directories(${LIB_JSON_CPP_LIBRARY_DIRS})
-link_libraries(${LIB_JSON_CPP_LIBRARIES})
+find_lib_by_pkgconfig(jsoncpp)
 
 # ######################################################################################################################
 # 项目
