@@ -1,50 +1,30 @@
 #include <pthread.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include <unistd.h>
+
+#include "Logger.h"
 
 int exit_flag = 0;
 
-void *start_routine(void *ptr) {
+void *start_routine([[maybe_unused]] void *ptr) {
   do {
-    printf("++++++++++++++++++++++++++\n");
+    LOG_DEB("++++++++++++++++++++++++++");
     usleep(500000);
-  } while (!exit_flag);
+  } while (0 == exit_flag);
 
-  return (void *)"9999";
+  return static_cast<void *>(const_cast<char *>("9999"));
 }
 
 void exit_func() {
-  printf("------------------------------------\n");
+  LOG_DEB("------------------------------------");
   exit_flag = 1;
   usleep(2000000);
-  printf("====================================\n");
+  LOG_DEB("====================================");
 }
 
-int main(int argc, char const *argv[]) {
+int main([[maybe_unused]] int argc, [[maybe_unused]] char const *argv[]) {
   int a = atexit(exit_func);
-  printf("atexit return a = %d\n", a);
-
-  // int iret = 0;
-  // pthread_t thread_id;
-  // pthread_create(&thread_id, NULL, start_routine, NULL);
-  // pthread_detach(thread_id);
-  // void *retval = NULL;
-  // iret = pthread_join(thread_id, &retval);
-  // if (iret)
-  // {
-  //     fprintf(stderr, "Error - pthread_join() return code: %d\n", iret);
-  //     exit(EXIT_FAILURE);
-  // }
-  // printf("子线程的返回值为：%s\n", (const char *)retval);
-  // do
-  // {
-  //     printf("*********************\n");
-  //     usleep(500000);
-  // } while (!exit_flag);
-
-  printf("主线程(%lu)即将退出...\n", pthread_self());
-  exit(EXIT_SUCCESS);
+  LOG_DEB("atexit return a = %d", a);
+  LOG_DEB("主线程(%lu)即将退出...", pthread_self());
+  return EXIT_SUCCESS;
 }

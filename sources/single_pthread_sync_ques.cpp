@@ -1,38 +1,39 @@
 #include <pthread.h>  // pthread_create pthread_t
-#include <stdio.h>    // printf fprintf
 #include <stdlib.h>   // EXIT_FAILURE EXIT_SUCCESS
 #include <unistd.h>   // sleep
 
+#include "Logger.h"
+
 int g_num = 0;
 
-void *start_routine_01(void *ptr) {
+void *start_routine_01([[maybe_unused]] void *ptr) {
   for (size_t i = 0; i < 10000; i++) {
     g_num++;
   }
 
-  return (void *)"8888";
+  return static_cast<void *>(const_cast<char *>("8888"));
 }
 
-void *start_routine_02(void *ptr) {
+void *start_routine_02([[maybe_unused]] void *ptr) {
   for (size_t i = 0; i < 10000; i++) {
     g_num++;
   }
 
-  return (void *)"9999";
+  return static_cast<void *>(const_cast<char *>("9999"));
 }
 
-int main(int argc, char const *argv[]) {
+int main([[maybe_unused]] int argc, [[maybe_unused]] char const *argv[]) {
   pthread_t thread_id_01;
   pthread_t thread_id_02;
 
   pthread_create(&thread_id_01, NULL, start_routine_01, NULL);
-  pthread_create(&thread_id_01, NULL, start_routine_02, NULL);
+  pthread_create(&thread_id_02, NULL, start_routine_02, NULL);
 
   pthread_join(thread_id_01, NULL);
   pthread_join(thread_id_02, NULL);
 
-  printf("计算结果为： %d\n", g_num);
+  LOG_DEB("计算结果为： %d", g_num);
+  LOG_DEB("主线程即将退出...");
 
-  printf("主线程即将退出...\n");
-  exit(EXIT_SUCCESS);
+  return EXIT_SUCCESS;
 }

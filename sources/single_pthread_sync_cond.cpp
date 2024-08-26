@@ -1,33 +1,34 @@
 #include <pthread.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-pthread_mutex_t mutex;
-pthread_cond_t cond;
+#include "Logger.h"
 
-void *start_routine_01(void *ptr) {
-  printf("进入阻塞状态...\n");
+pthread_mutex_t mutex;
+pthread_cond_t  cond;
+
+void *start_routine_01([[maybe_unused]] void *ptr) {
+  LOG_DEB("进入阻塞状态...");
   pthread_mutex_lock(&mutex);
   pthread_cond_wait(&cond, &mutex);
-  printf("获得信号以解除阻塞状态...\n");
+  LOG_DEB("获得信号以解除阻塞状态...");
 
   pthread_mutex_unlock(&mutex);
-  return (void *)NULL;
+  return nullptr;
 }
 
-void *start_routine_02(void *ptr) {
-  printf("等待5秒后发出解除信号...\n");
+void *start_routine_02([[maybe_unused]] void *ptr) {
+  LOG_DEB("等待5秒后发出解除信号...");
   sleep(5);
   pthread_mutex_lock(&mutex);
   pthread_cond_signal(&cond);
-  printf("解除信号已发出...\n");
+  LOG_DEB("解除信号已发出...");
 
   pthread_mutex_unlock(&mutex);
-  return (void *)NULL;
+  return nullptr;
 }
 
-int main(int argc, char const *argv[]) {
+int main([[maybe_unused]] int argc, [[maybe_unused]] char const *argv[]) {
   {
     pthread_mutexattr_t attr;       // 定义互斥属性
     pthread_mutexattr_init(&attr);  // 初始化互斥属性
@@ -48,7 +49,7 @@ int main(int argc, char const *argv[]) {
   pthread_t thread_id_02;
 
   pthread_create(&thread_id_01, NULL, start_routine_01, NULL);
-  pthread_create(&thread_id_01, NULL, start_routine_02, NULL);
+  pthread_create(&thread_id_02, NULL, start_routine_02, NULL);
 
   pthread_join(thread_id_01, NULL);
   pthread_join(thread_id_02, NULL);
@@ -56,5 +57,5 @@ int main(int argc, char const *argv[]) {
   pthread_mutex_destroy(&mutex);  // 销毁互斥
   pthread_cond_destroy(&cond);    // 销毁条件变量
 
-  exit(EXIT_SUCCESS);
+  return EXIT_SUCCESS;
 }

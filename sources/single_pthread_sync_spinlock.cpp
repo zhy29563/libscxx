@@ -1,37 +1,38 @@
 #include <pthread.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 
+#include "Logger.h"
+
 pthread_spinlock_t spinlock;
 
-void *start_routine_01(void *ptr) {
-  printf("子线程(%lu)开始运行...\n", pthread_self());
+void *start_routine_01([[maybe_unused]] void *ptr) {
+  LOG_DEB("子线程(%lu)开始运行...", pthread_self());
   for (size_t i = 0; i < 3; i++) {
     pthread_spin_lock(&spinlock);
-    printf("子线程(%lu)进入自旋锁\n", pthread_self());
+    LOG_DEB("子线程(%lu)进入自旋锁", pthread_self());
     sleep(1);
-    printf("子线程(%lu)离开自旋锁\n", pthread_self());
+    LOG_DEB("子线程(%lu)离开自旋锁", pthread_self());
     pthread_spin_unlock(&spinlock);
   }
-  return (void *)"9999";
+  return static_cast<void *>(const_cast<char *>("9999"));
 }
 
-void *start_routine_02(void *ptr) {
-  printf("子线程(%lu)开始运行...\n", pthread_self());
+void *start_routine_02([[maybe_unused]] void *ptr) {
+  LOG_DEB("子线程(%lu)开始运行...", pthread_self());
   for (size_t i = 0; i < 3; i++) {
     pthread_spin_lock(&spinlock);
-    printf("子线程(%lu)进入自旋锁\n", pthread_self());
+    LOG_DEB("子线程(%lu)进入自旋锁", pthread_self());
     sleep(1);
-    printf("子线程(%lu)离开自旋锁\n", pthread_self());
+    LOG_DEB("子线程(%lu)离开自旋锁", pthread_self());
     pthread_spin_unlock(&spinlock);
   }
-  return (void *)"9999";
+  return static_cast<void *>(const_cast<char *>("9999"));
 }
 
-int main(int argc, char const *argv[]) {
-  printf("主线程(%lu)开始运行...\n", pthread_self());
+int main([[maybe_unused]] int argc, [[maybe_unused]] char const *argv[]) {
+  LOG_DEB("主线程(%lu)开始运行...", pthread_self());
 
   pthread_spin_init(&spinlock, PTHREAD_PROCESS_PRIVATE);
 
@@ -45,6 +46,6 @@ int main(int argc, char const *argv[]) {
   pthread_join(thread_id_02, NULL);
 
   pthread_spin_destroy(&spinlock);
-  printf("主线程(%lu)即将退出...\n", pthread_self());
-  exit(EXIT_SUCCESS);
+  LOG_DEB("主线程(%lu)即将退出...", pthread_self());
+  return EXIT_SUCCESS;
 }

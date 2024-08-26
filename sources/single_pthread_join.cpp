@@ -1,34 +1,35 @@
 #include <pthread.h>  // pthread_create pthread_t
-#include <stdio.h>    // printf fprintf
 #include <stdlib.h>   // EXIT_FAILURE EXIT_SUCCESS
 #include <unistd.h>   // sleep
 
-void *start_routine(void *ptr) {
-  printf("子线程等待3秒后退出...\n");
+#include "Logger.h"
+
+void *start_routine([[maybe_unused]] void *ptr) {
+  LOG_DEB("子线程等待3秒后退出...");
   sleep(3);
-  return (void *)"9999";
+  return static_cast<void *>(const_cast<char *>("9999"));
 }
 
-int main(int argc, char const *argv[]) {
-  int iret = 0;
+int main([[maybe_unused]] int argc, [[maybe_unused]] char const *argv[]) {
+  int       error_code = 0;
   pthread_t thread_id;
 
-  iret = pthread_create(&thread_id, NULL, start_routine, NULL);
-  if (iret) {
-    fprintf(stderr, "Error - pthread_create() return code: %d\n", iret);
-    exit(EXIT_FAILURE);
+  error_code = pthread_create(&thread_id, NULL, start_routine, NULL);
+  if (0 != error_code) {
+    LOG_DEB("pthread_create() return code: %d", error_code);
+    return EXIT_FAILURE;
   }
 
-  printf("主线程继续执行...\n");
+  LOG_DEB("主线程继续执行...");
 
   void *retval = NULL;
-  iret = pthread_join(thread_id, &retval);
-  if (iret) {
-    fprintf(stderr, "Error - pthread_join() return code: %d\n", iret);
-    exit(EXIT_FAILURE);
+  error_code   = pthread_join(thread_id, &retval);
+  if (0 != error_code) {
+    LOG_DEB("pthread_join() return code: %d", error_code);
+    return EXIT_FAILURE;
   }
-  printf("子线程的返回值为：%s\n", (const char *)retval);
 
-  printf("主线程即将退出...\n");
-  exit(EXIT_SUCCESS);
+  LOG_DEB("子线程的返回值为：%s", (const char *)retval);
+  LOG_DEB("主线程即将退出...");
+  return EXIT_SUCCESS;
 }

@@ -1,53 +1,54 @@
 #include <pthread.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
 
-void *start_routine(void *ptr) {
-  printf("子线程(%lu)等待3秒后退出...\n", pthread_self());
+#include "Logger.h"
+
+void *start_routine([[maybe_unused]] void *ptr) {
+  LOG_DEB("子线程(%lu)等待3秒后退出...", pthread_self());
 
   clockid_t clock_id;
   pthread_getcpuclockid(pthread_self(), &clock_id);
-  printf("子线程(%lu)的CPU时钟ID(%d)\n", pthread_self(), clock_id);
+  LOG_DEB("子线程(%lu)的CPU时钟ID(%d)", pthread_self(), clock_id);
 
-  int sched_policy;
+  int                sched_policy;
   struct sched_param param;
   pthread_getschedparam(pthread_self(), &sched_policy, &param);
-  printf("子线程(%lu)的调度策略(%s)\n", pthread_self(),
-         sched_policy == SCHED_FIFO    ? "SCHED_FIFO"
-         : sched_policy == SCHED_RR    ? "SCHED_RR"
-         : sched_policy == SCHED_OTHER ? "SCHED_OTHER"
-                                       : "???");
-  printf("子线程(%lu)的调度优先级(%d)\n", pthread_self(), param.sched_priority);
+  LOG_DEB("子线程(%lu)的调度策略(%s)", pthread_self(),
+          sched_policy == SCHED_FIFO    ? "SCHED_FIFO"
+          : sched_policy == SCHED_RR    ? "SCHED_RR"
+          : sched_policy == SCHED_OTHER ? "SCHED_OTHER"
+                                        : "???");
+  LOG_DEB("子线程(%lu)的调度优先级(%d)", pthread_self(), param.sched_priority);
+  LOG_DEB("子线程(%lu)即将退出...", pthread_self());
 
-  printf("子线程(%lu)即将退出...\n", pthread_self());
-  return (void *)NULL;
+  return nullptr;
 }
 
-int main(int argc, char const *argv[]) {
-  printf("主线程(%lu)开始运行...\n", pthread_self());
+int main([[maybe_unused]] int argc, [[maybe_unused]] char const *argv[]) {
+  LOG_DEB("主线程(%lu)开始运行...", pthread_self());
 
   pthread_t thread_id;
   pthread_create(&thread_id, NULL, start_routine, NULL);
 
   clockid_t clock_id;
   pthread_getcpuclockid(pthread_self(), &clock_id);
-  printf("主线程(%lu)的CPU时钟ID(%d)\n", pthread_self(), clock_id);
+  LOG_DEB("主线程(%lu)的CPU时钟ID(%d)", pthread_self(), clock_id);
 
-  int sched_policy;
+  int                sched_policy;
   struct sched_param param;
   pthread_getschedparam(pthread_self(), &sched_policy, &param);
-  printf("主线程(%lu)的调度策略(%s)\n", pthread_self(),
-         sched_policy == SCHED_FIFO    ? "SCHED_FIFO"
-         : sched_policy == SCHED_RR    ? "SCHED_RR"
-         : sched_policy == SCHED_OTHER ? "SCHED_OTHER"
-                                       : "???");
-  printf("主线程(%lu)的调度优先级(%d)\n", pthread_self(), param.sched_priority);
-  printf("主线程(%lu)等待5秒后结束...\n", pthread_self());
+  LOG_DEB("主线程(%lu)的调度策略(%s)", pthread_self(),
+          sched_policy == SCHED_FIFO    ? "SCHED_FIFO"
+          : sched_policy == SCHED_RR    ? "SCHED_RR"
+          : sched_policy == SCHED_OTHER ? "SCHED_OTHER"
+                                        : "???");
+  LOG_DEB("主线程(%lu)的调度优先级(%d)", pthread_self(), param.sched_priority);
+  LOG_DEB("主线程(%lu)等待5秒后结束...", pthread_self());
   sleep(5);
 
-  printf("主线程(%lu)即将退出...\n", pthread_self());
-  exit(EXIT_SUCCESS);
+  LOG_DEB("主线程(%lu)即将退出...", pthread_self());
+  return EXIT_SUCCESS;
 }
