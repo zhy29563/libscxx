@@ -58,7 +58,35 @@ message(STATUS "LIBS_ROOT=${LIBS_ROOT}")
 # list(APPEND CMAKE_PREFIX_PATH ${LIBS_ROOT}/libxxx-vxx)
 # find_lib_by_cmake(xxx)
 # ######################################################################################################################
+list(APPEND CMAKE_PREFIX_PATH ${LIBS_ROOT}/liblcm-v1.5.0)
+find_lib_by_cmake(lcm)
 
+set(ENV{PKG_CONFIG_PATH} ${LIBS_ROOT}/liblcm-v1.5.0/lib/pkgconfig)
+find_lib_by_pkgconfig(lcm)
+
+# ######################################################################################################################
+# 消息中间件
+# ######################################################################################################################
+file(GLOB SUB_FILES LIST_DIRECTORIES FALSE ${CMAKE_SOURCE_DIR}/resources/messages/*)
+set(EXE_PATH ${LIBS_ROOT}/liblcm-v1.5.0/bin/lcm-gen)
+set(MSG_PATH ${CMAKE_SOURCE_DIR}/resources/messages)
+set(OUT_PATH ${CMAKE_BINARY_DIR}/messages)
+
+if(NOT EXISTS ${OUT_PATH})
+  file(MAKE_DIRECTORY ${OUT_PATH})
+endif()
+
+foreach(SUB_FILE ${SUB_FILES})
+  get_filename_component(SUB_FILE_NAME ${SUB_FILE} NAME)
+
+  if(SUB_FILE_NAME MATCHES ".*\.lcm$")
+    execute_process(COMMAND ${EXE_PATH} --c --c-cpath=${OUT_PATH} --c-hpath=${OUT_PATH} ${MSG_PATH}/${SUB_FILE_NAME})
+  endif()
+endforeach()
+
+file(GLOB MSG_FILES LIST_DIRECTORIES FALSE ${OUT_PATH}/*.[hc]*)
+include_directories(${OUT_PATH})
+message(STATUS "MSG_FILES=${MSG_FILES}")
 # ######################################################################################################################
 # 项目
 # ######################################################################################################################
@@ -69,7 +97,7 @@ foreach(SUB_FILE ${SUB_FILES})
 
   if(SUB_FILE_NAME MATCHES "^single_.*\.cpp$")
     get_filename_component(FILE_NAME ${SUB_FILE} NAME_WE)
-    add_executable(${FILE_NAME} ${SUB_FILE})
+    add_executable(${FILE_NAME} ${SUB_FILE} ${MSG_FILES})
     target_include_directories(${FILE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
   endif()
 endforeach()
