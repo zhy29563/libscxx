@@ -112,7 +112,7 @@ function build_cmake() {
 
   rm -rf "${FULL_BLT_PATH}"
   if cmake -S "${FULL_SRC_PATH}" -B "${FULL_BLT_PATH}" -DCMAKE_INSTALL_PREFIX="${FULL_INS_PATH}" ${BLD_PMS}; then
-    if ! cmake --build "${FULL_BLT_PATH}" --target install -j; then
+    if ! cmake --build "${FULL_BLT_PATH}" --target install -j8; then
       echo "build ${PKG_URL} is failed."
     fi
   else
@@ -162,7 +162,7 @@ function build_auto_tools() {
   }
 
   if "${OLDPWD}/configure" --prefix="${FULL_INS_PATH}" ${BLD_PMS}; then
-    if ! make install -j; then
+    if ! make install -j8; then
       echo "build ${PKG_URL} is failed."
     fi
   else
