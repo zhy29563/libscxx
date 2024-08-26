@@ -53,6 +53,31 @@ message(STATUS "LIBS_ROOT=${LIBS_ROOT}")
 # ######################################################################################################################
 # 依赖库
 # ######################################################################################################################
+set(ENV{PKG_CONFIG_PATH} ${LIBS_ROOT}/libprotobuf-v3.19.6/lib/pkgconfig)
+find_lib_by_pkgconfig(protobuf)
+
+# ######################################################################################################################
+# 消息中间件
+# ######################################################################################################################
+file(GLOB SUB_FILES LIST_DIRECTORIES FALSE ${CMAKE_SOURCE_DIR}/resources/messages/*)
+set(EXE_PATH ${LIBS_ROOT}/libprotobuf-v3.19.6/bin/protoc)
+set(MSG_PATH ${CMAKE_SOURCE_DIR}/resources/messages)
+set(OUT_PATH ${CMAKE_BINARY_DIR}/messages)
+
+if(NOT EXISTS ${OUT_PATH})
+  file(MAKE_DIRECTORY ${OUT_PATH})
+endif()
+
+foreach(SUB_FILE ${SUB_FILES})
+  get_filename_component(SUB_FILE_NAME ${SUB_FILE} NAME)
+
+  if(SUB_FILE_NAME MATCHES ".*\.proto$")
+    execute_process(COMMAND ${EXE_PATH} --cpp_out=${OUT_PATH} --proto_path=${MSG_PATH} ${SUB_FILE_NAME})
+  endif()
+endforeach()
+
+file(GLOB MSG_FILES LIST_DIRECTORIES FALSE ${OUT_PATH}/*.pb.*)
+include_directories(${OUT_PATH})
 
 # ######################################################################################################################
 # 项目
@@ -64,7 +89,7 @@ foreach(SUB_FILE ${SUB_FILES})
 
   if(SUB_FILE_NAME MATCHES "^single_.*\.cpp$")
     get_filename_component(FILE_NAME ${SUB_FILE} NAME_WE)
-    add_executable(${FILE_NAME} ${SUB_FILE})
+    add_executable(${FILE_NAME} ${SUB_FILE} ${MSG_FILES})
     target_include_directories(${FILE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
   endif()
 endforeach()
