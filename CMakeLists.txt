@@ -58,6 +58,9 @@ message(STATUS "LIBS_ROOT=${LIBS_ROOT}")
 # list(APPEND CMAKE_PREFIX_PATH ${LIBS_ROOT}/libxxx-vxx)
 # find_lib_by_cmake(xxx)
 # ######################################################################################################################
+include_directories(${LIBS_ROOT}/libdmlc-core-v0.3/include)
+link_directories(${LIBS_ROOT}/libdmlc-core-v0.3/lib)
+link_libraries(dmlc)
 
 # ######################################################################################################################
 # 项目
