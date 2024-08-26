@@ -52,6 +52,11 @@ message(STATUS "LIBS_ROOT=${LIBS_ROOT}")
 
 # ######################################################################################################################
 # 依赖库
+# set(ENV{PKG_CONFIG_PATH} ${LIBS_ROOT}/libxxx-vxx/lib/pkgconfig)
+# find_lib_by_pkgconfig(xxx)
+#
+# list(APPEND CMAKE_PREFIX_PATH ${LIBS_ROOT}/libxxx-vxx)
+# find_lib_by_cmake(xxx)
 # ######################################################################################################################
 include_directories(${LIBS_ROOT}/libreaderwriterqueue-v1.0.6/include)
 link_libraries(pthread)
