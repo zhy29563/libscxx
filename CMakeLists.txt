@@ -58,6 +58,11 @@ message(STATUS "LIBS_ROOT=${LIBS_ROOT}")
 # list(APPEND CMAKE_PREFIX_PATH ${LIBS_ROOT}/libxxx-vxx)
 # find_lib_by_cmake(xxx)
 # ######################################################################################################################
+find_lib_by_pkgconfig(glib-2.0)
+find_lib_by_pkgconfig(gio-2.0)
+find_lib_by_pkgconfig(gthread-2.0)
+find_lib_by_pkgconfig(gobject-2.0)
+find_lib_by_pkgconfig(gmodule-2.0)
 
 # ######################################################################################################################
 # 项目
