@@ -59,12 +59,12 @@ message(STATUS "LIBS_ROOT=${LIBS_ROOT}")
 # find_lib_by_cmake(xxx)
 # ######################################################################################################################
 list(APPEND CMAKE_PREFIX_PATH ${LIBS_ROOT}/libzmq-v4.3.5)
-find_package(ZeroMQ REQUIRED)
-print_all_variables_with_regex(^ZeroMQ)
+find_lib_by_cmake(ZeroMQ)
+find_thread_by_cmake()
 
 if(${ZeroMQ_FOUND})
   include_directories(${ZeroMQ_INCLUDE_DIR})
-  link_libraries(${ZeroMQ_LIBRARY} pthread)
+  link_libraries(${ZeroMQ_LIBRARY})
 endif()
 
 # ######################################################################################################################
